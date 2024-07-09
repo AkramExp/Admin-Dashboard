@@ -31,6 +31,23 @@ export async function loginUser(user: { username: string; password: string }) {
   }
 }
 
+export async function logoutUser() {
+  try {
+    localStorage.removeItem("userToken");
+    const response = await axios.post(
+      `${BACKEND_URL}/logout`,
+      {},
+      { withCredentials: true }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data.message;
+    }
+  }
+}
+
 export async function getCurrentUser() {
   try {
     const userToken = localStorage.getItem("userToken");

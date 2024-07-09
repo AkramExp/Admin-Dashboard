@@ -1,8 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getCurrentUser,
   registerUser as registerUserApi,
   loginUser as loginUserApi,
+  logoutUser as logoutUserApi,
 } from "@/api/user";
 import toast from "react-hot-toast";
 
@@ -42,6 +43,23 @@ export function useLoginUser() {
   });
 
   return { loginUser, isLoggingUser };
+}
+
+export function useLogoutUser() {
+  const queryClient = useQueryClient();
+
+  const { mutate: logoutUser, isPending: isLoggingOut } = useMutation({
+    mutationFn: logoutUserApi,
+    onSuccess: (response) => {
+      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: (error: string) => {
+      toast.error(error);
+    },
+  });
+
+  return { logoutUser, isLoggingOut };
 }
 
 export function useCurrentUser() {

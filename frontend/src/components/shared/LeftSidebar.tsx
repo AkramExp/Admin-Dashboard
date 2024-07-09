@@ -1,5 +1,9 @@
 const LeftSidebar = () => {
-  return <div>LeftSidebar</div>;
+  return (
+    <nav className="leftsidebar">
+      <div className="flex flex-col gap-11"></div>
+    </nav>
+  );
 };
 
 export default LeftSidebar;

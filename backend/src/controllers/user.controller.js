@@ -37,8 +37,6 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const userToken = await generateAccessToken(user._id);
 
-  console.log(userToken);
-
   return res
     .status(200)
     .json(new ApiResponse(200, { user, userToken }, "Registered Successfully"));
@@ -68,6 +66,15 @@ export const loginUser = asyncHandler(async (req, res) => {
         "Logged In Successfully"
       )
     );
+});
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  const options = { httpOnly: true, secure: true };
+
+  return res
+    .status(200)
+    .clearCookie("userToken", options)
+    .json(new ApiResponse(200, {}, "Logged Out Successfully"));
 });
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
