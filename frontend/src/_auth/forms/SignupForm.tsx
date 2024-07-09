@@ -14,9 +14,10 @@ import { SignupValidation } from "@/lib/validation";
 import { z } from "zod";
 import { Loader } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useRegisterUser } from "@/react-query/user";
 
 const SignupForm = () => {
-  const isLoading = false;
+  const { registerUser, isRegisteringUser } = useRegisterUser();
 
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -29,7 +30,7 @@ const SignupForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof SignupValidation>) {
-    console.log(values);
+    registerUser(values);
   }
 
   return (
@@ -101,7 +102,7 @@ const SignupForm = () => {
             )}
           />
           <Button type="submit" className="shad-button_primary">
-            {isLoading ? (
+            {isRegisteringUser ? (
               <div className="flex-center gap-2">
                 <Loader />
                 Loading...
