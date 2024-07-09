@@ -22,6 +22,7 @@ async function generateAccessToken(userId) {
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, username, email, password } = req.body;
+  console.log(req.body);
 
   const findUser = await User.findOne({ username });
 
@@ -38,4 +39,10 @@ export const registerUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Registered Successfully"));
+});
+
+export const getCurrentUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "User fetched successfully"));
 });

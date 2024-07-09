@@ -12,6 +12,14 @@ const userSchema = new Schema({
   email: {
     type: String,
   },
+  imageUrl: {
+    type: String,
+    default: "",
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
   password: {
     type: String,
   },
