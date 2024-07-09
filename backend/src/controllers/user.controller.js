@@ -22,7 +22,6 @@ async function generateAccessToken(userId) {
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, username, email, password } = req.body;
-  console.log(req.body);
 
   const findUser = await User.findOne({ username });
 
@@ -36,9 +35,39 @@ export const registerUser = asyncHandler(async (req, res) => {
     password,
   });
 
+  const userToken = await generateAccessToken(user._id);
+
+  console.log(userToken);
+
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Registered Successfully"));
+    .json(new ApiResponse(200, { user, userToken }, "Registered Successfully"));
+});
+
+export const loginUser = asyncHandler(async (req, res) => {
+  const { username, password } = req.body;
+
+  const findUser = await User.findOne({ username });
+
+  if (!findUser) throw new ApiError(400, "Invalid Credentials");
+
+  const isPasswordValid = findUser.isPasswordCorrect(password);
+
+  if (!isPasswordValid) throw new ApiError(400, "Invalid Credentials");
+
+  const userToken = await generateAccessToken(findUser._id);
+
+  const loggedInUser = await User.findById(findUser._id).select("-password");
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { user: loggedInUser, userToken },
+        "Logged In Successfully"
+      )
+    );
 });
 
 export const getCurrentUser = asyncHandler(async (req, res) => {

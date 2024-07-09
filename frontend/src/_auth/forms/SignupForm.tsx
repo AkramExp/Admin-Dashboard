@@ -13,11 +13,15 @@ import { Input } from "@/components/ui/input";
 import { SignupValidation } from "@/lib/validation";
 import { z } from "zod";
 import { Loader } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUser } from "@/react-query/user";
+import { useUserContext } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 const SignupForm = () => {
   const { registerUser, isRegisteringUser } = useRegisterUser();
+  const { checkAuthUser } = useUserContext();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -31,6 +35,16 @@ const SignupForm = () => {
 
   function onSubmit(values: z.infer<typeof SignupValidation>) {
     registerUser(values);
+
+    const isLoggedIn = checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+
+      navigate("/");
+    } else {
+      toast.error("Sign up failed, Please try again");
+    }
   }
 
   return (

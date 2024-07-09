@@ -18,7 +18,7 @@ const initialState = {
   isLoadingUser: false,
   isAuthenticated: false,
   setIsAuthenticated: () => {},
-  checkAuthUser: async () => false as boolean,
+  checkAuthUser: () => false as boolean,
 };
 
 const AuthContext = createContext<IContextType>(initialState);
@@ -34,11 +34,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     checkAuthUser();
-  }, []);
+  }, [isLoadingUser, currentUser]);
 
-  const checkAuthUser = async () => {
+  const checkAuthUser = () => {
     try {
-      if (currentUser) {
+      console.log(isLoadingUser, currentUser);
+
+      if (!isLoadingUser && currentUser) {
         setIsAuthenticated(true);
 
         return true;
@@ -63,4 +65,4 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export default AuthProvider;
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useUserContext = () => useContext(AuthContext);
