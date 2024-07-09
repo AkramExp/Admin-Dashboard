@@ -5,7 +5,6 @@ import {
   loginUser as loginUserApi,
 } from "@/api/user";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 export function useRegisterUser() {
   const { mutate: registerUser, isPending: isRegisteringUser } = useMutation({
@@ -16,7 +15,7 @@ export function useRegisterUser() {
         JSON.stringify(response.data.userToken)
       );
 
-      toast.success(response.message);
+      document.cookie = "userToken = " + response.data.userToken;
     },
     onError: (error: string) => {
       toast.error(error);
@@ -35,7 +34,7 @@ export function useLoginUser() {
         JSON.stringify(response.data.userToken)
       );
 
-      toast.success(response.message);
+      document.cookie = "userToken = " + response.data.userToken;
     },
     onError: (error: string) => {
       toast.error(error);

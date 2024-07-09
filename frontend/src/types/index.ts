@@ -3,7 +3,6 @@ export type IContextType = {
   isLoadingUser: boolean;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-  checkAuthUser: () => boolean;
 };
 
 export type INavLink = {

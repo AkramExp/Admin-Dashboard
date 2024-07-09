@@ -15,12 +15,10 @@ import { z } from "zod";
 import { Loader } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginUser } from "@/react-query/user";
-import { useUserContext } from "@/context/AuthContext";
 import toast from "react-hot-toast";
 
 const SigninForm = () => {
   const { loginUser, isLoggingUser } = useLoginUser();
-  const { checkAuthUser } = useUserContext();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof SigninValidation>>({
@@ -32,17 +30,13 @@ const SigninForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof SigninValidation>) {
-    loginUser(values);
-
-    const isLoggedIn = checkAuthUser();
-
-    if (isLoggedIn) {
-      form.reset();
-
-      navigate("/");
-    } else {
-      toast.error("Sign up failed, Please try again");
-    }
+    loginUser(values, {
+      onSuccess: (response) => {
+        form.reset();
+        toast.success(response.message);
+        navigate("/");
+      },
+    });
   }
 
   return (

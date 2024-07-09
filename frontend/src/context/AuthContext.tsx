@@ -1,6 +1,5 @@
-import { getCurrentUser } from "@/api/user";
 import { useCurrentUser } from "@/react-query/user";
-import { IContextType, IUser } from "@/types";
+import { IContextType } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +17,6 @@ const initialState = {
   isLoadingUser: false,
   isAuthenticated: false,
   setIsAuthenticated: () => {},
-  checkAuthUser: () => false as boolean,
 };
 
 const AuthContext = createContext<IContextType>(initialState);
@@ -31,34 +29,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!isLoadingUser && !currentUser) {
       navigate("/sign-in");
+    } else {
+      setIsAuthenticated(true);
+      navigate("/");
     }
-
-    checkAuthUser();
   }, [isLoadingUser, currentUser]);
-
-  const checkAuthUser = () => {
-    try {
-      console.log(isLoadingUser, currentUser);
-
-      if (!isLoadingUser && currentUser) {
-        setIsAuthenticated(true);
-
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  };
 
   const value = {
     user: currentUser,
     isLoadingUser,
     isAuthenticated,
     setIsAuthenticated,
-    checkAuthUser,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
