@@ -51,7 +51,7 @@ export function useLogoutUser() {
   const { mutate: logoutUser, isPending: isLoggingOut } = useMutation({
     mutationFn: logoutUserApi,
     onSuccess: (response) => {
-      toast.success(response.message);
+      toast(response.message);
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
     onError: (error: string) => {

@@ -35,7 +35,7 @@ const SignupForm = () => {
     registerUser(values, {
       onSuccess: (response) => {
         form.reset();
-        toast.success(response.message);
+        toast(response.message);
         navigate("/");
       },
     });
