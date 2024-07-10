@@ -5,7 +5,6 @@ import { IPost } from "@/types";
 
 const Home = () => {
   const { recentPosts, isLoadingPosts } = useRecentPosts();
-  console.log(recentPosts);
 
   return (
     <div className="flex flex-1">

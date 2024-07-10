@@ -1,6 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { createPost as createPostApi, getRecentPosts } from "@/api/post";
+import {
+  createPost as createPostApi,
+  getRecentPosts,
+  getSavedPosts,
+  toggleSave as toggleSaveApi,
+} from "@/api/post";
 
 export function useCreatePost() {
   const { mutate: createPost, isPending: isCreatingPost } = useMutation({
@@ -23,4 +28,31 @@ export function useRecentPosts() {
   });
 
   return { recentPosts, isLoadingPosts };
+}
+
+export function useToggleSave() {
+  const queryClient = useQueryClient();
+
+  const { mutate: toggleSave, isPending: isTogglingSave } = useMutation({
+    mutationFn: toggleSaveApi,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      toast(response.message);
+    },
+    onError: (error: string) => {
+      toast(error);
+    },
+  });
+
+  return { toggleSave, isTogglingSave };
+}
+
+export function useSavedPosts() {
+  const { data: savedPosts, isLoading: isLoadingSavedPosts } = useQuery({
+    queryKey: ["saved-posts"],
+    queryFn: getSavedPosts,
+  });
+
+  return { savedPosts, isLoadingSavedPosts };
 }

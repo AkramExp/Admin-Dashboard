@@ -2,6 +2,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { formatDate } from "@/lib/utils";
 import { IPost } from "@/types";
 import { Link } from "react-router-dom";
+import PostStats from "./PostStats";
 
 type PostCardProps = {
   post: IPost;
@@ -9,7 +10,13 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
-  console.log(post);
+
+  const isSaved = Boolean(
+    user?.savedPosts.find(
+      (savedPost: { postId: string; userId: string }) =>
+        savedPost.postId === post._id
+    )
+  );
 
   return (
     <div className="post-card">
@@ -66,6 +73,8 @@ const PostCard = ({ post }: PostCardProps) => {
           className="post-card_img"
         />
       </Link>
+
+      <PostStats post={post} userId={user?._id} isSaved={isSaved} />
     </div>
   );
 };

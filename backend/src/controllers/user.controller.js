@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -78,7 +79,23 @@ export const logoutUser = asyncHandler(async (req, res) => {
 });
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.user._id),
+      },
+    },
+    {
+      $lookup: {
+        from: "saves",
+        localField: "_id",
+        foreignField: "userId",
+        as: "savedPosts",
+      },
+    },
+  ]);
+
   return res
     .status(200)
-    .json(new ApiResponse(200, req.user, "User fetched successfully"));
+    .json(new ApiResponse(200, user[0], "User fetched successfully"));
 });
