@@ -14,20 +14,29 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { PostValidation } from "@/lib/validation";
+import { useCreatePost } from "@/react-query/post";
+import { useNavigate } from "react-router-dom";
 
 const PostForm = ({ post }: any) => {
+  const navigate = useNavigate();
+  const { createPost, isCreatingPost } = useCreatePost();
+
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
     defaultValues: {
       caption: post ? post.caption : "",
-      file: [],
       location: post ? post.location : "",
       tags: post ? post.tags.join(",") : "",
     },
   });
 
   function onSubmit(values: z.infer<typeof PostValidation>) {
-    console.log(values);
+    createPost(values, {
+      onSuccess: () => {
+        form.reset();
+        navigate("/");
+      },
+    });
   }
 
   return (
@@ -108,8 +117,9 @@ const PostForm = ({ post }: any) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
+            disabled={isCreatingPost}
           >
-            Submit
+            {isCreatingPost ? "Submiting..." : "Submit"}
           </Button>
         </div>
       </form>
