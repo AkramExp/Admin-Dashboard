@@ -5,6 +5,7 @@ import {
   getRecentPosts,
   getSavedPosts,
   toggleSave as toggleSaveApi,
+  toggleLikePost as toggleLikePostApi,
 } from "@/api/post";
 
 export function useCreatePost() {
@@ -55,4 +56,21 @@ export function useSavedPosts() {
   });
 
   return { savedPosts, isLoadingSavedPosts };
+}
+
+export function useToggleLikePost() {
+  const queryClient = useQueryClient();
+
+  const { mutate: toggleLikePost, isPending: isTogglingLike } = useMutation({
+    mutationFn: toggleLikePostApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+    },
+    onError: (error: string) => {
+      toast(error);
+    },
+  });
+
+  return { toggleLikePost, isTogglingLike };
 }

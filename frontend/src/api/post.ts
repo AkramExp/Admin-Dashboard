@@ -63,3 +63,19 @@ export async function getSavedPosts() {
     }
   }
 }
+
+export async function toggleLikePost(postId: string) {
+  try {
+    const response = await axios.post(
+      `${BACKEND_URL}/toggle-like/${postId}`,
+      {},
+      { withCredentials: true }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data.message;
+    }
+  }
+}

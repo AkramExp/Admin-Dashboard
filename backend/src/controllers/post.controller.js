@@ -5,6 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { Like } from "../models/like.model.js";
 
 export const createPost = asyncHandler(async (req, res) => {
   const { caption, location, tags } = req.body;
@@ -58,6 +59,25 @@ export const getRecentPosts = asyncHandler(async (req, res) => {
       },
     },
     {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "postId",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likes: {
+          $map: {
+            input: "$likes",
+            as: "like",
+            in: "$$like.userId",
+          },
+        },
+      },
+    },
+    {
       $project: {
         userId: 0,
       },
@@ -71,6 +91,8 @@ export const getRecentPosts = asyncHandler(async (req, res) => {
       $limit: 20,
     },
   ]);
+
+  console.log(posts);
 
   return res
     .status(200)
@@ -151,4 +173,19 @@ export const getSavedPosts = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, posts, "Saved posts fetched successfully"));
+});
+
+export const toggleLikePost = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { postId } = req.params;
+
+  const findLike = await Like.findOne({ userId, postId });
+
+  if (findLike) {
+    await Like.findByIdAndDelete(findLike._id);
+    return res.status(200).json(new ApiResponse(200, {}, "Post Disliked"));
+  } else {
+    await Like.create({ userId, postId });
+    return res.status(200).json(new ApiResponse(200, {}, "Post Liked"));
+  }
 });

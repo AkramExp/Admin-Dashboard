@@ -42,6 +42,7 @@ export type IPost = {
   tags: string[] | [];
   createdAt: string;
   user: IPostUser;
+  likes: [];
 };
 
 export type IUpdatePost = {

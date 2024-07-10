@@ -1,8 +1,10 @@
 import { useUserContext } from "@/context/AuthContext";
 import { formatDate } from "@/lib/utils";
 import { IPost } from "@/types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PostStats from "./PostStats";
+import { useToggleLikePost } from "@/react-query/post";
+import { useEffect, useState } from "react";
 
 type PostCardProps = {
   post: IPost;
@@ -10,12 +12,49 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
+  const { toggleLikePost } = useToggleLikePost();
+  const [clickTimeout, setClickTimeout] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
+      }
+    };
+  }, [clickTimeout]);
+
+  const handleClick = () => {
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      setClickTimeout(0);
+      handleDoubleClick();
+    } else {
+      const timeout = setTimeout(() => {
+        handleSingleClick();
+        setClickTimeout(0);
+      }, 250);
+      setClickTimeout(timeout);
+    }
+  };
+
+  const handleSingleClick = () => {
+    navigate(`/posts/${post._id}`);
+  };
+
+  const handleDoubleClick = () => {
+    toggleLikePost(post._id);
+  };
 
   const isSaved = Boolean(
     user?.savedPosts.find(
       (savedPost: { postId: string; userId: string }) =>
         savedPost.postId === post._id
     )
+  );
+
+  const isLiked = Boolean(
+    post.likes.find((userId: string) => userId === user?._id)
   );
 
   return (
@@ -55,7 +94,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </Link>
       </div>
 
-      <Link to={`/posts/${post._id}`}>
+      <div>
         <div className="small-medium lg:base-medium py-5">
           <p>{post.caption}</p>
           <ul className="flex gap-1 mt-2">
@@ -71,10 +110,11 @@ const PostCard = ({ post }: PostCardProps) => {
           src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
           alt="post image"
           className="post-card_img"
+          onClick={() => handleClick()}
         />
-      </Link>
+      </div>
 
-      <PostStats post={post} userId={user?._id} isSaved={isSaved} />
+      <PostStats post={post} isSaved={isSaved} isLiked={isLiked} />
     </div>
   );
 };
