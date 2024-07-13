@@ -24,8 +24,6 @@ const PostCard = ({ post }: PostCardProps) => {
     };
   }, [clickTimeout]);
 
-  console.log(user);
-
   const handleClick = () => {
     if (clickTimeout) {
       clearTimeout(clickTimeout);

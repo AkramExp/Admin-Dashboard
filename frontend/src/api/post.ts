@@ -98,7 +98,8 @@ export async function updatePost(updatedPost: any) {
   try {
     const response = await axios.patch(
       `${BACKEND_URL}/update/${updatedPost._id}`,
-      { updatedPost }
+      updatedPost,
+      { withCredentials: true }
     );
 
     return response.data;
