@@ -15,7 +15,7 @@ const Home = () => {
             <Loader />
           ) : (
             <ul className="flex flex-col flex-1 gap-9 w-full">
-              {recentPosts.map((post: IPost, index: number) => (
+              {recentPosts?.map((post: IPost, index: number) => (
                 <PostCard post={post} key={index} />
               ))}
             </ul>

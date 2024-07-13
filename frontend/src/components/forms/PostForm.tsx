@@ -14,12 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { PostValidation } from "@/lib/validation";
-import { useCreatePost } from "@/react-query/post";
+import { useCreatePost, useUpdatePost } from "@/react-query/post";
 import { useNavigate } from "react-router-dom";
 
 const PostForm = ({ post }: any) => {
   const navigate = useNavigate();
   const { createPost, isCreatingPost } = useCreatePost();
+  const { updatePost, isUpdatingPost } = useUpdatePost();
 
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
@@ -31,12 +32,28 @@ const PostForm = ({ post }: any) => {
   });
 
   function onSubmit(values: z.infer<typeof PostValidation>) {
-    createPost(values, {
-      onSuccess: () => {
-        form.reset();
-        navigate("/");
-      },
-    });
+    if (post) {
+      const data = {
+        caption: values.caption,
+        location: values.location,
+        tags: values.tags,
+        _id: post._id,
+      };
+
+      updatePost(data, {
+        onSuccess: () => {
+          form.reset();
+          navigate("/");
+        },
+      });
+    } else {
+      createPost(values, {
+        onSuccess: () => {
+          form.reset();
+          navigate("/");
+        },
+      });
+    }
   }
 
   return (
@@ -61,22 +78,32 @@ const PostForm = ({ post }: any) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="file"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="shadcn-form_label">Add Photos</FormLabel>
-              <FormControl>
-                <FileUploader
-                  fieldChange={field.onChange}
-                  mediaUrl={post?.imageUrl}
-                />
-              </FormControl>
-              <FormMessage className="shad-form_message" />
-            </FormItem>
-          )}
-        />
+        {post?.imageUrl ? (
+          <div className="flex flex-center flex-col bg-dark-3 rounded-xl p-5 lg:p-10">
+            <img
+              src={post.imageUrl}
+              alt="post image"
+              className="file_uploader-img"
+            />
+          </div>
+        ) : (
+          <FormField
+            control={form.control}
+            name="file"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="shadcn-form_label">Add Photos</FormLabel>
+                <FormControl>
+                  <FileUploader
+                    fieldChange={field.onChange}
+                    mediaUrl={post?.imageUrl}
+                  />
+                </FormControl>
+                <FormMessage className="shad-form_message" />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="location"
@@ -117,9 +144,9 @@ const PostForm = ({ post }: any) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
-            disabled={isCreatingPost}
+            disabled={isCreatingPost || isUpdatingPost}
           >
-            {isCreatingPost ? "Submiting..." : "Submit"}
+            {isCreatingPost || isUpdatingPost ? "Submiting..." : "Submit"}
           </Button>
         </div>
       </form>

@@ -92,8 +92,6 @@ export const getRecentPosts = asyncHandler(async (req, res) => {
     },
   ]);
 
-  console.log(posts);
-
   return res
     .status(200)
     .json(new ApiResponse(200, posts, "Recent posts fetched successfully"));
@@ -168,8 +166,6 @@ export const getSavedPosts = asyncHandler(async (req, res) => {
     },
   ]);
 
-  console.log(posts);
-
   return res
     .status(200)
     .json(new ApiResponse(200, posts, "Saved posts fetched successfully"));
@@ -188,4 +184,40 @@ export const toggleLikePost = asyncHandler(async (req, res) => {
     await Like.create({ userId, postId });
     return res.status(200).json(new ApiResponse(200, {}, "Post Liked"));
   }
+});
+
+export const getPostById = asyncHandler(async (req, res) => {
+  const { postId } = req.params;
+
+  const post = await Post.findById(postId);
+
+  if (!post) throw new ApiError(400, "Post does not exists");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, post, "Post fetched successfully"));
+});
+
+export const updatePost = asyncHandler(async (req, res) => {
+  const { caption, location, tags } = req.body;
+  const { postId } = req.params;
+  const userId = req.user._id;
+
+  const findPost = await Post.findOne({ $and: [{ _id: postId }, { userId }] });
+
+  if (!findPost) throw new ApiError(400, "Unthorized Request");
+
+  const post = await Post.findByIdAndUpdate(
+    findPost._id,
+    {
+      caption,
+      location,
+      tags,
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, post, "Post Updated Successfully"));
 });

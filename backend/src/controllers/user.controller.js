@@ -79,6 +79,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
 });
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
+  console.log("hello");
   const user = await User.aggregate([
     {
       $match: {

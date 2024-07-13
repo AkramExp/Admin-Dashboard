@@ -50,8 +50,7 @@ export async function logoutUser() {
 
 export async function getCurrentUser() {
   try {
-    const userToken = localStorage.getItem("userToken");
-
+    let userToken = localStorage.getItem("userToken");
     if (userToken) {
       document.cookie = "userToken = " + userToken;
     }

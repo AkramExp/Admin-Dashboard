@@ -62,7 +62,7 @@ export type IUser = {
   email: string;
   imageUrl: string;
   bio: string;
-  savedPosts: [];
+  savedPosts: any[];
 };
 
 export type INewUser = {

@@ -10,6 +10,7 @@ export const initialUser = {
   email: "",
   imageUrl: "",
   bio: "",
+  savedPosts: [],
 };
 
 const initialState = {

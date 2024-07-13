@@ -6,7 +6,10 @@ import {
   getSavedPosts,
   toggleSave as toggleSaveApi,
   toggleLikePost as toggleLikePostApi,
+  getPostById,
+  updatePost as updatePostApi,
 } from "@/api/post";
+import { useParams } from "react-router-dom";
 
 export function useCreatePost() {
   const { mutate: createPost, isPending: isCreatingPost } = useMutation({
@@ -73,4 +76,29 @@ export function useToggleLikePost() {
   });
 
   return { toggleLikePost, isTogglingLike };
+}
+
+export function usePost() {
+  const { postId } = useParams();
+
+  const { data: post, isLoading: isLoadingPost } = useQuery({
+    queryFn: () => getPostById(postId),
+    queryKey: ["post", postId],
+  });
+
+  return { post, isLoadingPost };
+}
+
+export function useUpdatePost() {
+  const { mutate: updatePost, isPending: isUpdatingPost } = useMutation({
+    mutationFn: updatePostApi,
+    onSuccess: (response) => {
+      toast(response.message);
+    },
+    onError: (error: string) => {
+      toast(error);
+    },
+  });
+
+  return { updatePost, isUpdatingPost };
 }
