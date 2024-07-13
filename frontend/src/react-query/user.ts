@@ -25,12 +25,13 @@ export function useRegisterUser() {
 
 export function useLoginUser() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { mutate: loginUser, isPending: isLoggingUser } = useMutation({
     mutationFn: loginUserApi,
     onSuccess: (response) => {
       localStorage.setItem("userToken", response.data.userToken);
-      // document.cookie = "userToken = " + response.data.userToken;
+      navigate("/", { replace: true });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ["user"] });
       }, 100);
@@ -50,7 +51,7 @@ export function useLogoutUser() {
     mutationFn: logoutUserApi,
     onSuccess: (response) => {
       toast(response.message);
-      navigate("/sign-in");
+      navigate("/sign-in", { replace: true });
     },
     onError: (error: string) => {
       toast.error(error);

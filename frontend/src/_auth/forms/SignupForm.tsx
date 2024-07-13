@@ -16,10 +16,17 @@ import { Loader } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUser } from "@/react-query/user";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
+import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
   const { registerUser, isRegisteringUser } = useRegisterUser();
   const navigate = useNavigate();
+  const { isAuthenticated } = useUserContext();
+
+  useEffect(() => {
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated]);
 
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),

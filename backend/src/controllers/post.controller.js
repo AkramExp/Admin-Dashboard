@@ -140,6 +140,15 @@ export const getSavedPosts = asyncHandler(async (req, res) => {
               localField: "userId",
               foreignField: "_id",
               as: "user",
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    username: 1,
+                    imageUrl: 1,
+                  },
+                },
+              ],
             },
           },
           {
@@ -149,19 +158,43 @@ export const getSavedPosts = asyncHandler(async (req, res) => {
               },
             },
           },
-          {
-            $project: {
-              name: 1,
-              username: 1,
-              imageUrl: 1,
-            },
-          },
         ],
+      },
+    },
+    {
+      $addFields: {
+        post: {
+          $first: "$post",
+        },
       },
     },
     {
       $replaceRoot: {
         newRoot: "$post",
+      },
+    },
+    {
+      $project: {
+        userId: 0,
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "postId",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likes: {
+          $map: {
+            input: "$likes",
+            as: "like",
+            in: "$$like.userId",
+          },
+        },
       },
     },
   ]);
@@ -189,13 +222,59 @@ export const toggleLikePost = asyncHandler(async (req, res) => {
 export const getPostById = asyncHandler(async (req, res) => {
   const { postId } = req.params;
 
-  const post = await Post.findById(postId);
+  const post = await Post.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(postId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        foreignField: "_id",
+        localField: "userId",
+        as: "user",
+        pipeline: [
+          {
+            $project: { name: 1, username: 1, imageUrl: 1 },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        user: {
+          $first: "$user",
+        },
+      },
+    },
+    { $project: { userId: 0 } },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "postId",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likes: {
+          $map: {
+            input: "$likes",
+            as: "like",
+            in: "$$like.userId",
+          },
+        },
+      },
+    },
+  ]);
 
   if (!post) throw new ApiError(400, "Post does not exists");
 
   return res
     .status(200)
-    .json(new ApiResponse(200, post, "Post fetched successfully"));
+    .json(new ApiResponse(200, post[0], "Post fetched successfully"));
 });
 
 export const updatePost = asyncHandler(async (req, res) => {
@@ -207,12 +286,14 @@ export const updatePost = asyncHandler(async (req, res) => {
 
   if (!findPost) throw new ApiError(400, "Unthorized Request");
 
+  const tagsArray = tags.split(",");
+
   const post = await Post.findByIdAndUpdate(
     findPost._id,
     {
       caption,
       location,
-      tags,
+      tags: tagsArray,
     },
     { new: true }
   );
@@ -220,4 +301,21 @@ export const updatePost = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, post, "Post Updated Successfully"));
+});
+
+export const deletePost = asyncHandler(async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user._id;
+
+  const findPost = await Post.findOne({ $and: [{ _id: postId }, { userId }] });
+
+  if (!findPost) throw new ApiError(400, "Unthorized Request");
+
+  await Post.findByIdAndDelete(findPost._id);
+  await Save.deleteOne({ postId });
+  await Like.deleteOne({ postId });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Post Deleted Successfully"));
 });

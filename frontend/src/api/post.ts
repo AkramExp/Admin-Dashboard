@@ -109,3 +109,19 @@ export async function updatePost(updatedPost: any) {
     }
   }
 }
+
+export async function deletePost(postId: string) {
+  try {
+    const response = await axios.delete(`${BACKEND_URL}/${postId}`, {
+      withCredentials: true,
+    });
+
+    console.log(response);
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data.message;
+    }
+  }
+}

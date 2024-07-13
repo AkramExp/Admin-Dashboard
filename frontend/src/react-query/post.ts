@@ -8,6 +8,7 @@ import {
   toggleLikePost as toggleLikePostApi,
   getPostById,
   updatePost as updatePostApi,
+  deletePost as deletePostApi,
 } from "@/api/post";
 import { useParams } from "react-router-dom";
 
@@ -90,10 +91,16 @@ export function usePost() {
 }
 
 export function useUpdatePost() {
+  const queryClient = useQueryClient();
+  const { postId } = useParams();
+
   const { mutate: updatePost, isPending: isUpdatingPost } = useMutation({
     mutationFn: updatePostApi,
     onSuccess: (response) => {
       toast(response.message);
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
     },
     onError: (error: string) => {
       toast(error);
@@ -101,4 +108,19 @@ export function useUpdatePost() {
   });
 
   return { updatePost, isUpdatingPost };
+}
+
+export function useDeletePost() {
+  const { mutate: deletePost, isPending: isDeletingPost } = useMutation({
+    mutationFn: deletePostApi,
+    onSuccess: (response) => {
+      toast(response.message);
+      window.history.go(-1);
+    },
+    onError: (error: string) => {
+      toast(error);
+    },
+  });
+
+  return { deletePost, isDeletingPost };
 }

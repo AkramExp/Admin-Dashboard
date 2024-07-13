@@ -32,7 +32,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       navigate("/sign-in");
     } else {
       setIsAuthenticated(true);
-      navigate("/");
     }
   }, [isLoadingUser, currentUser]);
 

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createPost,
+  deletePost,
   getPostById,
   getRecentPosts,
   getSavedPosts,
@@ -15,16 +16,18 @@ const postRouter = Router();
 
 postRouter.get("/recent-posts", getRecentPosts);
 
+postRouter.get("/saved-posts", verifyUser, getSavedPosts);
+
 postRouter.get("/:postId", getPostById);
 
 postRouter.post("/create", upload.single("file"), verifyUser, createPost);
 
 postRouter.post("/toggle-save/:postId", verifyUser, toggleSave);
 
-postRouter.get("/saved-posts", verifyUser, getSavedPosts);
-
 postRouter.post("/toggle-like/:postId", verifyUser, toggleLikePost);
 
 postRouter.patch("/update/:postId", verifyUser, updatePost);
+
+postRouter.delete("/:postId", verifyUser, deletePost);
 
 export default postRouter;
