@@ -3,21 +3,46 @@ import PostStats from "@/components/shared/PostStats";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/AuthContext";
 import { multiFormatDateString } from "@/lib/utils";
-import { useDeletePost, usePost } from "@/react-query/post";
+import { useDeletePost, usePost, useToggleLikePost } from "@/react-query/post";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const PostDetails = () => {
   const { post, isLoadingPost } = usePost();
   const { user } = useUserContext();
   const { deletePost } = useDeletePost();
+  const { toggleLikePost } = useToggleLikePost();
+  const [clickTimeout, setClickTimeout] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
+      }
+    };
+  }, [clickTimeout]);
+
+  const handleClick = (postId: string) => {
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      setClickTimeout(0);
+      handleDoubleClick(postId);
+    } else {
+      const timeout = setTimeout(() => {
+        setClickTimeout(0);
+      }, 250);
+      setClickTimeout(timeout);
+    }
+  };
+
+  const handleDoubleClick = (postId: string) => {
+    toggleLikePost(postId);
+  };
 
   if (isLoadingPost) return <Loader />;
 
   const isSaved = Boolean(
-    user?.savedPosts.find(
-      (savedPost: { postId: string; userId: string }) =>
-        savedPost.postId === post._id
-    )
+    user?.savedPosts.find((postId) => postId === post._id)
   );
 
   const isLiked = Boolean(
@@ -30,7 +55,12 @@ const PostDetails = () => {
         <Loader />
       ) : (
         <div className="post_details-card">
-          <img src={post.imageUrl} alt="post" className="post_details-img" />
+          <img
+            src={post.imageUrl}
+            alt="post"
+            className="post_details-img"
+            onClick={() => handleClick(post._id)}
+          />
           <div className="post_details-info">
             <div className="flex-between w-full">
               <Link

@@ -10,6 +10,8 @@ import {
   updatePost as updatePostApi,
   deletePost as deletePostApi,
   getAllPosts,
+  getUserPosts,
+  getUserLikedPosts,
 } from "@/api/post";
 import { useParams } from "react-router-dom";
 
@@ -22,6 +24,8 @@ export function useCreatePost() {
       toast(response.message);
       queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
     },
     onError: (error: string) => {
       toast(error);
@@ -46,8 +50,10 @@ export function useToggleSave() {
   const { mutate: toggleSave, isPending: isTogglingSave } = useMutation({
     mutationFn: toggleSaveApi,
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
       toast(response.message);
     },
     onError: (error: string) => {
@@ -75,6 +81,10 @@ export function useToggleLikePost() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["liked-posts"] });
     },
     onError: (error: string) => {
       toast(error);
@@ -106,6 +116,7 @@ export function useUpdatePost() {
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
       queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
     },
     onError: (error: string) => {
       toast(error);
@@ -124,6 +135,8 @@ export function useDeletePost() {
       toast(response.message);
       queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
       window.history.go(-1);
     },
     onError: (error: string) => {
@@ -136,9 +149,29 @@ export function useDeletePost() {
 
 export function useAllPosts() {
   const { data: allPosts, isLoading: isLoadingAllPosts } = useQuery({
-    queryKey: ["all-users"],
+    queryKey: ["all-posts"],
     queryFn: getAllPosts,
   });
 
   return { allPosts, isLoadingAllPosts };
+}
+
+export function useUserPosts() {
+  const { userId } = useParams();
+
+  const { data: userPosts, isLoading: isLoadingUserPosts } = useQuery({
+    queryKey: ["user-posts", userId],
+    queryFn: () => getUserPosts(userId),
+  });
+
+  return { userPosts, isLoadingUserPosts };
+}
+
+export function useUserLikedPosts() {
+  const { data: likedPosts, isLoading: isLoadingLikedPosts } = useQuery({
+    queryKey: ["liked-posts"],
+    queryFn: getUserLikedPosts,
+  });
+
+  return { likedPosts, isLoadingLikedPosts };
 }

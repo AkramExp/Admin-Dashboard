@@ -4,9 +4,10 @@ import {
   registerUser as registerUserApi,
   loginUser as loginUserApi,
   logoutUser as logoutUserApi,
+  getUserById,
 } from "@/api/user";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function useRegisterUser() {
   const { mutate: registerUser, isPending: isRegisteringUser } = useMutation({
@@ -33,7 +34,7 @@ export function useLoginUser() {
       localStorage.setItem("userToken", response.data.userToken);
       navigate("/", { replace: true });
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ["user"] });
+        queryClient.invalidateQueries({ queryKey: ["current-user"] });
       }, 100);
     },
     onError: (error: string) => {
@@ -63,10 +64,21 @@ export function useLogoutUser() {
 
 export function useCurrentUser() {
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["current-user"],
     queryFn: getCurrentUser,
     retry: false,
   });
 
   return { currentUser, isLoadingUser };
+}
+
+export function useUserById() {
+  const { userId } = useParams();
+
+  const { data: currentUser, isLoading: isLoadingIdUser } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => getUserById(userId),
+  });
+
+  return { currentUser, isLoadingIdUser };
 }

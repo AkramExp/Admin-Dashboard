@@ -6,6 +6,8 @@ import {
   getPostById,
   getRecentPosts,
   getSavedPosts,
+  getUserLikedPosts,
+  getUserPosts,
   toggleLikePost,
   toggleSave,
   updatePost,
@@ -16,6 +18,10 @@ import { verifyUser } from "../middleware/user.middleware.js";
 const postRouter = Router();
 
 postRouter.get("/recent-posts", getRecentPosts);
+
+postRouter.get("/liked", verifyUser, getUserLikedPosts);
+
+postRouter.get("/user/:userId", getUserPosts);
 
 postRouter.get("/saved-posts", verifyUser, getSavedPosts);
 

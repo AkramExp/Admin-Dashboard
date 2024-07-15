@@ -197,6 +197,11 @@ export const getSavedPosts = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
   ]);
 
   return res
@@ -368,4 +373,100 @@ export const getAllPosts = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, posts, "All posts fetched successfully"));
+});
+
+export const getUserPosts = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const posts = await Post.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $addFields: { user: { $first: "$user" } },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "postId",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likes: {
+          $map: {
+            input: "$likes",
+            as: "like",
+            in: "$$like.userId",
+          },
+        },
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, posts, "User posts fetched successfully"));
+});
+
+export const getUserLikedPosts = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const posts = await Like.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "postId",
+        foreignField: "_id",
+        as: "post",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user",
+              pipeline: [{ $project: { username: 1, name: 1, imageUrl: 1 } }],
+            },
+          },
+          {
+            $addFields: { user: { $first: "$user" } },
+          },
+          {
+            $project: { userId: 0 },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: { post: { $first: "$post" } },
+    },
+    { $replaceRoot: { newRoot: "$post" } },
+    { $sort: { createdAt: -1 } },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, posts, "Liked posts fetched successfully"));
 });
