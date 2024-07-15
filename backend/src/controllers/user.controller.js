@@ -93,6 +93,17 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
         as: "savedPosts",
       },
     },
+    {
+      $addFields: {
+        savedPosts: {
+          $map: {
+            input: "$savedPosts",
+            as: "savedPost",
+            in: "$$savedPost.postId",
+          },
+        },
+      },
+    },
   ]);
 
   return res

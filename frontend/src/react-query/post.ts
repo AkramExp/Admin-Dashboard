@@ -9,14 +9,19 @@ import {
   getPostById,
   updatePost as updatePostApi,
   deletePost as deletePostApi,
+  getAllPosts,
 } from "@/api/post";
 import { useParams } from "react-router-dom";
 
 export function useCreatePost() {
+  const queryClient = useQueryClient();
+
   const { mutate: createPost, isPending: isCreatingPost } = useMutation({
     mutationFn: createPostApi,
     onSuccess: (response) => {
       toast(response.message);
+      queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
     },
     onError: (error: string) => {
       toast(error);
@@ -111,10 +116,14 @@ export function useUpdatePost() {
 }
 
 export function useDeletePost() {
+  const queryClient = useQueryClient();
+
   const { mutate: deletePost, isPending: isDeletingPost } = useMutation({
     mutationFn: deletePostApi,
     onSuccess: (response) => {
       toast(response.message);
+      queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
       window.history.go(-1);
     },
     onError: (error: string) => {
@@ -123,4 +132,13 @@ export function useDeletePost() {
   });
 
   return { deletePost, isDeletingPost };
+}
+
+export function useAllPosts() {
+  const { data: allPosts, isLoading: isLoadingAllPosts } = useQuery({
+    queryKey: ["all-users"],
+    queryFn: getAllPosts,
+  });
+
+  return { allPosts, isLoadingAllPosts };
 }

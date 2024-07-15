@@ -1,5 +1,5 @@
 import { useUserContext } from "@/context/AuthContext";
-import { formatDate, multiFormatDateString } from "@/lib/utils";
+import { multiFormatDateString } from "@/lib/utils";
 import { IPost } from "@/types";
 import { Link, useNavigate } from "react-router-dom";
 import PostStats from "./PostStats";
@@ -47,10 +47,7 @@ const PostCard = ({ post }: PostCardProps) => {
   };
 
   const isSaved = Boolean(
-    user?.savedPosts.find(
-      (savedPost: { postId: string; userId: string }) =>
-        savedPost.postId === post._id
-    )
+    user?.savedPosts.find((postId) => postId === post._id)
   );
 
   const isLiked = Boolean(

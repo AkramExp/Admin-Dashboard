@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createPost,
   deletePost,
+  getAllPosts,
   getPostById,
   getRecentPosts,
   getSavedPosts,
@@ -17,6 +18,8 @@ const postRouter = Router();
 postRouter.get("/recent-posts", getRecentPosts);
 
 postRouter.get("/saved-posts", verifyUser, getSavedPosts);
+
+postRouter.get("/all", verifyUser, getAllPosts);
 
 postRouter.get("/:postId", getPostById);
 

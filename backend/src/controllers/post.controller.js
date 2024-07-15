@@ -319,3 +319,53 @@ export const deletePost = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, {}, "Post Deleted Successfully"));
 });
+
+export const getAllPosts = asyncHandler(async (req, res) => {
+  const posts = await Post.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+        pipeline: [{ $project: { username: 1, name: 1, imageUrl: 1 } }],
+      },
+    },
+    {
+      $addFields: {
+        user: {
+          $first: "$user",
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "postId",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likes: {
+          $map: {
+            input: "$likes",
+            as: "like",
+            in: "$$like.userId",
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        userId: 0,
+      },
+    },
+    { $sort: { createdAt: -1 } },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, posts, "All posts fetched successfully"));
+});
