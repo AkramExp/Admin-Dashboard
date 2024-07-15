@@ -5,6 +5,7 @@ import {
   loginUser as loginUserApi,
   logoutUser as logoutUserApi,
   getUserById,
+  updateUser as updateUserApi,
 } from "@/api/user";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -81,4 +82,21 @@ export function useUserById() {
   });
 
   return { currentUser, isLoadingIdUser };
+}
+
+export function useUpdateUser() {
+  const queryClient = useQueryClient();
+
+  const { mutate: updateUser, isPending: isUpdatingUser } = useMutation({
+    mutationFn: updateUserApi,
+    onSuccess: (response) => {
+      toast(response.message);
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+    },
+    onError: (error: string) => {
+      toast(error);
+    },
+  });
+
+  return { updateUser, isUpdatingUser };
 }

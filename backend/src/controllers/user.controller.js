@@ -3,6 +3,7 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 async function generateAccessToken(userId) {
   try {
@@ -119,4 +120,37 @@ export const getUserById = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, user, "User fetched successfully"));
+});
+
+export const updateUser = asyncHandler(async (req, res) => {
+  const { name, username, bio, email } = req.body;
+  let imageUrl = req.file.path;
+  const userId = req.user._id;
+
+  if (imageUrl) {
+    const localFilePath = req.file.path;
+
+    const imageFile = await uploadOnCloudinary(localFilePath);
+
+    if (!imageFile)
+      throw new ApiError(400, "Something went wrong while uploading image");
+
+    imageUrl = imageFile.url;
+  }
+
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      name,
+      username,
+      imageUrl,
+      bio,
+      email,
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Profile Updated Successfully"));
 });

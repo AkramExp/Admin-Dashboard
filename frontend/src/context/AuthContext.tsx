@@ -29,6 +29,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!isLoadingUser && !currentUser) {
+      setIsAuthenticated(false);
       navigate("/sign-in");
     } else {
       setIsAuthenticated(true);

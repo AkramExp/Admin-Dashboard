@@ -46,3 +46,5 @@ export const multiFormatDateString = (timestamp: string = ""): string => {
       return "Just now";
   }
 };
+
+export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
