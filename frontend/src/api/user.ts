@@ -57,7 +57,7 @@ export async function getCurrentUser() {
       const sameSite = "None";
 
       let cookieString = "userToken=" + userToken + `; path=${path}`;
-      cookieString += `; domain=${domain}`;
+      // cookieString += `; domain=${domain}`;
       cookieString += "; secure";
       cookieString += `; SameSite=${sameSite}`;
 
