@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getAllUsers,
   getCurrentUser,
+  getFollowers,
   getFollowing,
   getUserById,
   loginUser,
@@ -21,7 +22,7 @@ userRouter.get("/all-users", getAllUsers);
 
 userRouter.get("/following/:userId", getFollowing);
 
-userRouter.get("/followers/:userId", getFollowing);
+userRouter.get("/followers/:userId", getFollowers);
 
 userRouter.post("/register", registerUser);
 

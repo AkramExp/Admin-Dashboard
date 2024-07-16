@@ -24,15 +24,15 @@ const FollowersList = () => {
         ) : (
           <ul className="user-grid">
             {followers.map((user: any) => {
-              if (user._id !== currentUser?._id)
-                return (
-                  <li key={user?._id} className="flex-1 min-w-[200px] w-full">
-                    <FollowCard
-                      user={user}
-                      isFollowing={isFollowing(user._id)}
-                    />
-                  </li>
-                );
+              return (
+                <li key={user?._id} className="flex-1 min-w-[200px] w-full">
+                  <FollowCard
+                    user={user}
+                    isFollowing={isFollowing(user._id)}
+                    showButton={user._id !== currentUser?._id}
+                  />
+                </li>
+              );
             })}
           </ul>
         )}

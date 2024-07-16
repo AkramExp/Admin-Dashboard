@@ -314,7 +314,7 @@ export const getFollowers = asyncHandler(async (req, res) => {
   const followers = await Follow.aggregate([
     {
       $match: {
-        followerId: new mongoose.Types.ObjectId(userId),
+        followingId: new mongoose.Types.ObjectId(userId),
       },
     },
     {
