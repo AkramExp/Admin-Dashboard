@@ -28,6 +28,10 @@ app.use("/api/post", postRouter);
 
 connectDB();
 
+app.get("/", (req, res) => {
+  res.send("Server Running");
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on port ${process.env.PORT}`);
 });
