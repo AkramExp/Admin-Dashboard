@@ -52,7 +52,7 @@ export async function getCurrentUser() {
   try {
     let userToken = localStorage.getItem("userToken");
     if (userToken) {
-      const domain = ".render.com";
+      const domain = ".onrender.com";
       const path = "/";
       const sameSite = "None";
 
