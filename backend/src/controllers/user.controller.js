@@ -233,7 +233,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
     users = await User.aggregate([
       {
         $match: {
-          username: { $regex: search, $options: "i" },
+          name: { $regex: search, $options: "i" },
         },
       },
     ]);
