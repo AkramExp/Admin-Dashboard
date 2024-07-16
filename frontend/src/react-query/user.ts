@@ -35,8 +35,8 @@ export function useLoginUser() {
 
   const { mutate: loginUser, isPending: isLoggingUser } = useMutation({
     mutationFn: loginUserApi,
-    onSuccess: (response) => {
-      localStorage.setItem("userToken", response.data.userToken);
+    onSuccess: () => {
+      // localStorage.setItem("userToken", response.data.userToken);
       navigate("/", { replace: true });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ["current-user"] });

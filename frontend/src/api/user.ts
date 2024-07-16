@@ -33,7 +33,7 @@ export async function loginUser(user: { username: string; password: string }) {
 
 export async function logoutUser() {
   try {
-    localStorage.removeItem("userToken");
+    // localStorage.removeItem("userToken");
     const response = await axios.post(
       `${BACKEND_URL}/logout`,
       {},
@@ -50,18 +50,17 @@ export async function logoutUser() {
 
 export async function getCurrentUser() {
   try {
-    let userToken = localStorage.getItem("userToken");
-    if (userToken) {
-      const path = "/";
-      const sameSite = "None";
+    // let userToken = localStorage.getItem("userToken");
+    // if (userToken) {
+    //   const path = "/";
+    //   const sameSite = "None";
 
-      let cookieString = "userToken=" + userToken + `; path=${path}`;
-      cookieString += `; domain = .onrender.com`;
-      cookieString += "; secure";
-      cookieString += `; SameSite=${sameSite}`;
+    //   let cookieString = "userToken=" + userToken + `; path=${path}`;
+    //   cookieString += "; secure";
+    //   cookieString += `; SameSite=${sameSite}`;
 
-      document.cookie = cookieString;
-    }
+    //   document.cookie = cookieString;
+    // }
 
     const response = await axios.get(`${BACKEND_URL}/`, {
       withCredentials: true,

@@ -41,6 +41,12 @@ export const registerUser = asyncHandler(async (req, res) => {
   const userToken = await generateAccessToken(user._id);
 
   return res
+    .cookie("userToken", userToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      path: "/",
+    })
     .status(200)
     .json(new ApiResponse(200, { user, userToken }, "Registered Successfully"));
 });
@@ -60,27 +66,25 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(findUser._id).select("-password");
 
-  return (
-    res
-      // .cookie("userToken", userToken, {
-      //   httpOnly: true,
-      //   secure: true,
-      //   sameSite: "None",
-      //   path: "/",
-      // })
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          { user: loggedInUser, userToken },
-          "Logged In Successfully"
-        )
+  return res
+    .cookie("userToken", userToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      path: "/",
+    })
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { user: loggedInUser, userToken },
+        "Logged In Successfully"
       )
-  );
+    );
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
-  const options = { httpOnly: true, secure: true };
+  const options = { httpOnly: true, secure: true, sameSite: "None", path: "/" };
 
   return res
     .status(200)
