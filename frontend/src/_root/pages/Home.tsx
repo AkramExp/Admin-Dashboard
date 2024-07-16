@@ -14,11 +14,19 @@ const Home = () => {
           {isLoadingPosts ? (
             <Loader />
           ) : (
-            <ul className="flex flex-col flex-1 gap-9 w-full">
-              {recentPosts?.map((post: IPost, index: number) => (
-                <PostCard post={post} key={index} />
-              ))}
-            </ul>
+            <>
+              {recentPosts.length === 0 ? (
+                <div className="mt-10 text-light-2">
+                  Follow Friends to see their Posts
+                </div>
+              ) : (
+                <ul className="flex flex-col flex-1 gap-9 w-full">
+                  {recentPosts?.map((post: IPost, index: number) => (
+                    <PostCard post={post} key={index} />
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </div>
       </div>
