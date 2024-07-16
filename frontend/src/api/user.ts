@@ -52,10 +52,16 @@ export async function getCurrentUser() {
   try {
     let userToken = localStorage.getItem("userToken");
     if (userToken) {
-      document.cookie =
-        "userToken = " +
-        userToken +
-        "; domain='.onrender.com'; secure; SameSite='none'";
+      const domain = ".onrender.com";
+      const path = "/";
+      const sameSite = "None";
+
+      let cookieString = "userToken=" + userToken + `; path=${path}`;
+      cookieString += `; domain=${domain}`;
+      cookieString += "; secure";
+      cookieString += `; SameSite=${sameSite}`;
+
+      document.cookie = cookieString;
     }
 
     const response = await axios.get(`${BACKEND_URL}/`, {
