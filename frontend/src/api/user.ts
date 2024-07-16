@@ -52,12 +52,12 @@ export async function getCurrentUser() {
   try {
     let userToken = localStorage.getItem("userToken");
     if (userToken) {
-      // const domain = ".onrender.com";
+      const domain = ".render.com";
       const path = "/";
       const sameSite = "None";
 
       let cookieString = "userToken=" + userToken + `; path=${path}`;
-      // cookieString += `; domain=${domain}`;
+      cookieString += `; domain=${domain}`;
       cookieString += "; secure";
       cookieString += `; SameSite=${sameSite}`;
 
