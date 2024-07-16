@@ -61,6 +61,13 @@ export const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(findUser._id).select("-password");
 
   return res
+    .cookie("userToken", userToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      domain: ".onrender.com",
+      path: "/",
+    })
     .status(200)
     .json(
       new ApiResponse(
