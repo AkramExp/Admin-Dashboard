@@ -63,6 +63,7 @@ export type IUser = {
   imageUrl: string;
   bio: string;
   savedPosts: any[];
+  following: any[];
 };
 
 export type INewUser = {

@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { Follow } from "../models/follow.model.js";
 
 async function generateAccessToken(userId) {
   try {
@@ -105,6 +106,25 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "followerId",
+        as: "following",
+      },
+    },
+    {
+      $addFields: {
+        following: {
+          $map: {
+            input: "$following",
+            as: "follow",
+            in: "$$follow.followingId",
+          },
+        },
+      },
+    },
   ]);
 
   return res
@@ -153,4 +173,34 @@ export const updateUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Profile Updated Successfully"));
+});
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  console.log("hi");
+  const users = await User.find();
+
+  return res.status(200).json(new ApiResponse(200, users, "All users fetched"));
+});
+
+export const toggleFollow = asyncHandler(async (req, res) => {
+  const followerId = req.user._id;
+  const { followingId } = req.params;
+
+  const findFollow = await Follow.findOne({
+    $and: [{ followerId }, { followingId }],
+  });
+
+  if (findFollow) {
+    await Follow.findByIdAndDelete(findFollow._id);
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "User Removed from Friend list"));
+  } else {
+    await Follow.create({ followerId, followingId });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "User Added to Friend List"));
+  }
 });

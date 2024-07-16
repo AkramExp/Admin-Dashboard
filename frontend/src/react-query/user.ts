@@ -6,6 +6,8 @@ import {
   logoutUser as logoutUserApi,
   getUserById,
   updateUser as updateUserApi,
+  getAllUsers,
+  toggleFollow as toggleFollowApi,
 } from "@/api/user";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -99,4 +101,30 @@ export function useUpdateUser() {
   });
 
   return { updateUser, isUpdatingUser };
+}
+
+export function useAllUsers() {
+  const { data: allUsers, isLoading: isLoadingAllUsers } = useQuery({
+    queryKey: ["all-users"],
+    queryFn: getAllUsers,
+  });
+
+  return { allUsers, isLoadingAllUsers };
+}
+
+export function useToggleFollow() {
+  const queryClient = useQueryClient();
+
+  const { mutate: toggleFollow, isPending: isTogglingFollow } = useMutation({
+    mutationFn: toggleFollowApi,
+    onSuccess: (response) => {
+      toast(response.message);
+      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+    },
+    onError: (error: string) => {
+      toast(error);
+    },
+  });
+
+  return { toggleFollow, isTogglingFollow };
 }

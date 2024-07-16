@@ -5,7 +5,7 @@ import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GridPostList from "@/components/shared/GridPostList";
 import LikedPosts from "./LikedPosts";
-import { useUserById } from "@/react-query/user";
+import { useToggleFollow, useUserById } from "@/react-query/user";
 import { useUserPosts } from "@/react-query/post";
 
 interface StabBlockProps {
@@ -25,6 +25,7 @@ const Profile = () => {
   const { pathname } = useLocation();
   const { userPosts, isLoadingUserPosts } = useUserPosts();
   const { currentUser, isLoadingIdUser } = useUserById();
+  const { toggleFollow, isTogglingFollow } = useToggleFollow();
 
   if (isLoadingIdUser || isLoadingUserPosts)
     return (
@@ -33,22 +34,28 @@ const Profile = () => {
       </div>
     );
 
+  const isFollowing = Boolean(
+    user?.following.find((followId) => followId === currentUser._id)
+  );
+
   return (
     <div className="profile-container">
       <div className="profile-inner_container">
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
           <img
-            src={user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+            src={
+              currentUser?.imageUrl || "/assets/icons/profile-placeholder.svg"
+            }
             alt="profile"
             className="w-28 h-28 lg:h-36 lg:w-36 rounded-full object-cover"
           />
           <div className="flex flex-col flex-1 justify-between md:mt-2">
             <div className="flex flex-col w-full">
               <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full">
-                {user?.name}
+                {currentUser?.name}
               </h1>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
-                @{user?.username}
+                @{currentUser?.username}
               </p>
             </div>
 
@@ -59,7 +66,7 @@ const Profile = () => {
             </div>
 
             <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">
-              {user?.bio}
+              {currentUser?.bio}
             </p>
           </div>
 
@@ -83,8 +90,13 @@ const Profile = () => {
               </Link>
             </div>
             <div className={`${user?._id === currentUser._id && "hidden"}`}>
-              <Button type="button" className="shad-button_primary px-8">
-                Follow
+              <Button
+                type="button"
+                className="shad-button_primary px-8 disabled:cursor-not-allowed"
+                onClick={() => toggleFollow(currentUser._id)}
+                disabled={isTogglingFollow}
+              >
+                {isFollowing ? "Unfollow" : "Follow"}
               </Button>
             </div>
           </div>
