@@ -11,6 +11,7 @@ import {
 } from "@/api/user";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { useUserContext } from "@/context/AuthContext";
 
 export function useRegisterUser() {
   const { mutate: registerUser, isPending: isRegisteringUser } = useMutation({
@@ -50,11 +51,13 @@ export function useLoginUser() {
 
 export function useLogoutUser() {
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useUserContext();
 
   const { mutate: logoutUser, isPending: isLoggingOut } = useMutation({
     mutationFn: logoutUserApi,
     onSuccess: (response) => {
       toast(response.message);
+      setIsAuthenticated(false);
       navigate("/sign-in", { replace: true });
     },
     onError: (error: string) => {

@@ -11,6 +11,7 @@ export const initialUser = {
   imageUrl: "",
   bio: "",
   savedPosts: [],
+  following: [],
 };
 
 const initialState = {
