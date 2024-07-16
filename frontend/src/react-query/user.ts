@@ -10,7 +10,7 @@ import {
   toggleFollow as toggleFollowApi,
 } from "@/api/user";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 
 export function useRegisterUser() {
@@ -107,9 +107,13 @@ export function useUpdateUser() {
 }
 
 export function useAllUsers() {
+  const [searchParams] = useSearchParams();
+
+  const search = searchParams.get("search") || "";
+
   const { data: allUsers, isLoading: isLoadingAllUsers } = useQuery({
     queryKey: ["all-users"],
-    queryFn: getAllUsers,
+    queryFn: () => getAllUsers(search),
   });
 
   return { allUsers, isLoadingAllUsers };

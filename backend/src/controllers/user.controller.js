@@ -212,8 +212,20 @@ export const updateUser = asyncHandler(async (req, res) => {
 });
 
 export const getAllUsers = asyncHandler(async (req, res) => {
-  console.log("hi");
-  const users = await User.find();
+  const { search } = req.query;
+  let users;
+
+  if (!search === "") {
+    users = await User.find();
+  } else {
+    users = await User.aggregate([
+      {
+        $match: {
+          username: { $regex: search, $options: "i" },
+        },
+      },
+    ]);
+  }
 
   return res.status(200).json(new ApiResponse(200, users, "All users fetched"));
 });

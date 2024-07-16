@@ -2,17 +2,39 @@ import UserCard from "@/components/shared/UserCard";
 import { Input } from "@/components/ui/input";
 import { useUserContext } from "@/context/AuthContext";
 import { useAllUsers } from "@/react-query/user";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const AllUsers = () => {
   const { allUsers, isLoadingAllUsers } = useAllUsers();
   const [searchValue, setSearchValue] = useState("");
   const { user: currentUser } = useUserContext();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setSearchParams({});
+  }, []);
 
   function isFollowing(userId: string) {
     return Boolean(
       currentUser?.following.find((followId) => followId === userId)
+    );
+  }
+
+  function handleSubmit(e: any) {
+    e.preventDefault();
+
+    if (searchValue === "") {
+      searchParams.delete("search");
+    } else {
+      searchParams.set("search", searchValue);
+    }
+    setSearchParams(searchParams);
+    setTimeout(() =>
+      queryClient.invalidateQueries({ queryKey: ["all-users"] })
     );
   }
 
@@ -21,7 +43,10 @@ const AllUsers = () => {
       <div className="user-container">
         <div className="explore-inner_container">
           <h2 className="h3-bold md:h2-bold w-full">Search Users</h2>
-          <div className="flex gap-1 px-4 w-full rounded-lg bg-dark-4">
+          <form
+            className="flex gap-1 px-4 w-full rounded-lg bg-dark-4"
+            onSubmit={(e) => handleSubmit(e)}
+          >
             <img
               src="/assets/icons/search.svg"
               width={24}
@@ -38,7 +63,7 @@ const AllUsers = () => {
                 setSearchValue(value);
               }}
             />
-          </div>
+          </form>
         </div>
         {isLoadingAllUsers ? (
           <Loader />

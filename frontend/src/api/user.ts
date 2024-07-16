@@ -98,9 +98,10 @@ export async function updateUser(user: any) {
   }
 }
 
-export async function getAllUsers() {
+export async function getAllUsers(search: string) {
   try {
     const response = await axios.get(`${BACKEND_URL}/all-users`, {
+      params: { search: search },
       withCredentials: true,
     });
 
