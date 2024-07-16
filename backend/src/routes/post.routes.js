@@ -17,7 +17,7 @@ import { verifyUser } from "../middleware/user.middleware.js";
 
 const postRouter = Router();
 
-postRouter.get("/recent-posts", getRecentPosts);
+postRouter.get("/recent-posts", verifyUser, getRecentPosts);
 
 postRouter.get("/liked", verifyUser, getUserLikedPosts);
 

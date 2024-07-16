@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Like } from "../models/like.model.js";
+import { Follow } from "../models/follow.model.js";
 
 export const createPost = asyncHandler(async (req, res) => {
   const { caption, location, tags } = req.body;
@@ -33,7 +34,31 @@ export const createPost = asyncHandler(async (req, res) => {
 });
 
 export const getRecentPosts = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const followingArray = await Follow.aggregate([
+    {
+      $match: {
+        followerId: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $project: {
+        followingId: 1,
+      },
+    },
+  ]);
+
+  const followings = followingArray.map((follow) => follow.followingId);
+
+  followings.push(userId);
+
   const posts = await Post.aggregate([
+    {
+      $match: {
+        userId: { $in: followings },
+      },
+    },
     {
       $lookup: {
         from: "users",

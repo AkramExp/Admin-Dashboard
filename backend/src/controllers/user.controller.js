@@ -135,11 +135,47 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 export const getUserById = asyncHandler(async (req, res) => {
   const { userId } = req.params;
 
-  const user = await User.findById(userId);
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "followerId",
+        as: "followingCount",
+      },
+    },
+    {
+      $addFields: {
+        followingCount: {
+          $size: "$followingCount",
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "followingId",
+        as: "followerCount",
+      },
+    },
+    {
+      $addFields: {
+        followerCount: {
+          $size: "$followerCount",
+        },
+      },
+    },
+  ]);
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User fetched successfully"));
+    .json(new ApiResponse(200, user[0], "User fetched successfully"));
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
@@ -195,12 +231,12 @@ export const toggleFollow = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .json(new ApiResponse(200, {}, "User Removed from Friend list"));
+      .json(new ApiResponse(200, {}, "User Removed from Following"));
   } else {
     await Follow.create({ followerId, followingId });
 
     return res
       .status(200)
-      .json(new ApiResponse(200, {}, "User Added to Friend List"));
+      .json(new ApiResponse(200, {}, "User Added to Following"));
   }
 });

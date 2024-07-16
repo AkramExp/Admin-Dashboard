@@ -79,7 +79,7 @@ const GridPostList = ({
                     "/assets/icons/profile-placeholder.svg"
                   }
                   alt="user"
-                  className="h-8 w-8 rounded-full"
+                  className="h-8 w-8 rounded-full object-cover"
                 />
                 <p className="line-clamp-1">{post.user.name}</p>
               </div>

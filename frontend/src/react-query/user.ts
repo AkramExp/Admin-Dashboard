@@ -120,6 +120,8 @@ export function useToggleFollow() {
     onSuccess: (response) => {
       toast(response.message);
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["recent-posts"] });
     },
     onError: (error: string) => {
       toast(error);
