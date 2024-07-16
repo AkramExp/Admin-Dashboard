@@ -52,12 +52,11 @@ export async function getCurrentUser() {
   try {
     let userToken = localStorage.getItem("userToken");
     if (userToken) {
-      const domain = "snapgram-backend-05ph.onrender.com";
       const path = "/";
       const sameSite = "None";
 
       let cookieString = "userToken=" + userToken + `; path=${path}`;
-      cookieString += `; domain=${domain}`;
+      cookieString += `; domain = .onrender.com`;
       cookieString += "; secure";
       cookieString += `; SameSite=${sameSite}`;
 
