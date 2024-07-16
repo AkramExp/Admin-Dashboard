@@ -52,7 +52,10 @@ export async function getCurrentUser() {
   try {
     let userToken = localStorage.getItem("userToken");
     if (userToken) {
-      document.cookie = "userToken = " + userToken;
+      document.cookie =
+        "userToken = " +
+        userToken +
+        "; domain='.onrender.com'; secure; SameSite='none'";
     }
 
     const response = await axios.get(`${BACKEND_URL}/`, {
