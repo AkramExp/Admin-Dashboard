@@ -50,19 +50,19 @@ export async function logoutUser() {
 
 export async function getCurrentUser() {
   try {
-    // let userToken = localStorage.getItem("userToken");
-    // if (userToken) {
-    //   const domain = ".onrender.com";
-    //   const path = "/";
-    //   const sameSite = "None";
+    let userToken = localStorage.getItem("userToken");
+    if (userToken) {
+      // const domain = "https://snapgram-backend-05ph.onrender.com";
+      const path = "/";
+      const sameSite = "None";
 
-    //   let cookieString = "userToken=" + userToken + `; path=${path}`;
-    //   cookieString += `; domain=${domain}`;
-    //   cookieString += "; secure";
-    //   cookieString += `; SameSite=${sameSite}`;
+      let cookieString = "userToken=" + userToken + `; path=${path}`;
+      // cookieString += `; domain=${domain}`;
+      cookieString += "; secure";
+      cookieString += `; SameSite=${sameSite}`;
 
-    //   document.cookie = cookieString;
-    // }
+      document.cookie = cookieString;
+    }
 
     const response = await axios.get(`${BACKEND_URL}/`, {
       withCredentials: true,

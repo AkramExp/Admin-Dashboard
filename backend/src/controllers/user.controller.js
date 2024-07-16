@@ -60,22 +60,23 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(findUser._id).select("-password");
 
-  return res
-    .cookie("userToken", userToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      // domain: ".onrender.com",
-      path: "/",
-    })
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { user: loggedInUser, userToken },
-        "Logged In Successfully"
+  return (
+    res
+      // .cookie("userToken", userToken, {
+      //   httpOnly: true,
+      //   secure: true,
+      //   sameSite: "None",
+      //   path: "/",
+      // })
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { user: loggedInUser, userToken },
+          "Logged In Successfully"
+        )
       )
-    );
+  );
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
