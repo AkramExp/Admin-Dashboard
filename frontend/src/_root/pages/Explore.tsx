@@ -1,6 +1,6 @@
 import GridPostList from "@/components/shared/GridPostList";
+import Loader from "@/components/shared/Loader";
 import { useAllPosts } from "@/react-query/post";
-import { Loader } from "lucide-react";
 
 const Explore = () => {
   const { allPosts, isLoadingAllPosts } = useAllPosts();

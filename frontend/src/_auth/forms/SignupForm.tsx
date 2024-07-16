@@ -18,11 +18,13 @@ import { useRegisterUser } from "@/react-query/user";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 import { useUserContext } from "@/context/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SignupForm = () => {
   const { registerUser, isRegisteringUser } = useRegisterUser();
   const navigate = useNavigate();
   const { isAuthenticated } = useUserContext();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (isAuthenticated) navigate("/");
@@ -44,6 +46,9 @@ const SignupForm = () => {
         form.reset();
         toast(response.message);
         navigate("/");
+        setTimeout(() =>
+          queryClient.invalidateQueries({ queryKey: ["current-user"] })
+        );
       },
     });
   }

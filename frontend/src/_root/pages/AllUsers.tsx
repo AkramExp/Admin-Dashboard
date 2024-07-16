@@ -66,7 +66,9 @@ const AllUsers = () => {
           </form>
         </div>
         {isLoadingAllUsers ? (
-          <Loader />
+          <div className="w-full flex items-center justify-center min-h-[40vh]">
+            <Loader />
+          </div>
         ) : (
           <ul className="user-grid">
             {allUsers.map((user: any) => {

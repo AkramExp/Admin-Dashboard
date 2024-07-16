@@ -1,6 +1,6 @@
 import GridPostList from "@/components/shared/GridPostList";
+import Loader from "@/components/shared/Loader";
 import { useUserLikedPosts } from "@/react-query/post";
-import { Loader } from "lucide-react";
 
 const LikedPosts = () => {
   const { likedPosts, isLoadingLikedPosts } = useUserLikedPosts();

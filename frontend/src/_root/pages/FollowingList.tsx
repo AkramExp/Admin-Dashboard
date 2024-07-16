@@ -1,12 +1,11 @@
 import FollowCard from "@/components/shared/FollowCard";
+import Loader from "@/components/shared/Loader";
 import { useUserContext } from "@/context/AuthContext";
 import { useFollowing } from "@/react-query/user";
-import { Loader } from "lucide-react";
 
 const FollowingList = () => {
   const { following, isLoadingFollowing } = useFollowing();
   const { user: currentUser } = useUserContext();
-  console.log(following);
 
   function isFollowing(userId: string) {
     return Boolean(

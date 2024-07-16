@@ -1,7 +1,7 @@
 import FollowCard from "@/components/shared/FollowCard";
+import Loader from "@/components/shared/Loader";
 import { useUserContext } from "@/context/AuthContext";
 import { useFollowers } from "@/react-query/user";
-import { Loader } from "lucide-react";
 
 const FollowersList = () => {
   const { followers, isLoadingFollowers } = useFollowers();

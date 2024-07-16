@@ -1,6 +1,6 @@
 import PostForm from "@/components/forms/PostForm";
+import Loader from "@/components/shared/Loader";
 import { usePost } from "@/react-query/post";
-import { Loader } from "lucide-react";
 
 const EditPost = () => {
   const { post, isLoadingPost } = usePost();

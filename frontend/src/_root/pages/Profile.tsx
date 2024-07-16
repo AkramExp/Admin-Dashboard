@@ -1,12 +1,12 @@
 import { Route, Routes, Link, Outlet, useLocation } from "react-router-dom";
 
 import { useUserContext } from "@/context/AuthContext";
-import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GridPostList from "@/components/shared/GridPostList";
 import LikedPosts from "./LikedPosts";
 import { useToggleFollow, useUserById } from "@/react-query/user";
 import { useUserPosts } from "@/react-query/post";
+import Loader from "@/components/shared/Loader";
 
 interface StabBlockProps {
   value: string | number;
