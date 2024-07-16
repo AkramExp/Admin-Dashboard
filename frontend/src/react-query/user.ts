@@ -8,6 +8,7 @@ import {
   updateUser as updateUserApi,
   getAllUsers,
   toggleFollow as toggleFollowApi,
+  getFollowing,
 } from "@/api/user";
 import toast from "react-hot-toast";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -136,4 +137,26 @@ export function useToggleFollow() {
   });
 
   return { toggleFollow, isTogglingFollow };
+}
+
+export function useFollowing() {
+  const { userId } = useParams();
+
+  const { data: following, isLoading: isLoadingFollowing } = useQuery({
+    queryKey: ["following", userId],
+    queryFn: () => getFollowing(userId),
+  });
+
+  return { following, isLoadingFollowing };
+}
+
+export function useFollowers() {
+  const { userId } = useParams();
+
+  const { data: followers, isLoading: isLoadingFollowers } = useQuery({
+    queryKey: ["followers", userId],
+    queryFn: () => getFollowing(userId),
+  });
+
+  return { followers, isLoadingFollowers };
 }

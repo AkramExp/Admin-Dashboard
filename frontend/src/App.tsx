@@ -15,6 +15,8 @@ import {
 import SignupForm from "./_auth/forms/SignupForm";
 import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
+import FollowingList from "./_root/pages/FollowingList";
+import FollowersList from "./_root/pages/FollowersList";
 
 const App = () => {
   return (
@@ -37,6 +39,14 @@ const App = () => {
           <Route path="/posts/:postId" element={<PostDetails />} />
           <Route path="/profile/:userId/*" element={<Profile />} />
           <Route path="/update-profile/:userId" element={<UpdateProfile />} />
+          <Route
+            path="/profile/:userId/following"
+            element={<FollowingList />}
+          />
+          <Route
+            path="/profile/:userId/followers"
+            element={<FollowersList />}
+          />
         </Route>
       </Routes>
     </main>

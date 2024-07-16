@@ -61,8 +61,18 @@ const Profile = () => {
 
             <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start flex-wrap z-20">
               <StatBlock value={userPosts.length} label="Posts" />
-              <StatBlock value={currentUser.followerCount} label="Followers" />
-              <StatBlock value={currentUser.followingCount} label="Following" />
+              <Link to={`/profile/${currentUser._id}/followers`}>
+                <StatBlock
+                  value={currentUser.followerCount}
+                  label="Followers"
+                />
+              </Link>
+              <Link to={`/profile/${currentUser._id}/following`}>
+                <StatBlock
+                  value={currentUser.followingCount}
+                  label="Following"
+                />
+              </Link>
             </div>
 
             <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">

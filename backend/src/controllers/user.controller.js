@@ -252,3 +252,89 @@ export const toggleFollow = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, {}, "User Added to Following"));
   }
 });
+
+export const getFollowing = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const following = await Follow.aggregate([
+    {
+      $match: {
+        followerId: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "followingId",
+        foreignField: "_id",
+        as: "following",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              name: 1,
+              imageUrl: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        following: { $first: "$following" },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$following",
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, following, "Following fetched successfully"));
+});
+
+export const getFollowers = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const followers = await Follow.aggregate([
+    {
+      $match: {
+        followerId: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "followerId",
+        foreignField: "_id",
+        as: "followers",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              name: 1,
+              imageUrl: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        followers: { $first: "$followers" },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$followers",
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, followers, "Followersfetched successfully"));
+});
