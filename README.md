@@ -1,10 +1,15 @@
-
 # Snapgram
 
 Snapgram is a modern social media website with a stunning UI with a native mobile feel.
 
+### Live Site : https://snapgram-akramexp.onrender.com
+
+**Note : It might take around 1 minute to load the website due to website inactivity**
+
 ## Features
+
 Snapgram provides user a bunch of features in the website which are listed below
+
 - **Create your account**
 - **Login to your account**
 - **Update your account details and your profile picture**
@@ -19,6 +24,7 @@ Snapgram provides user a bunch of features in the website which are listed below
 - **Checkout your following and followers list and of the friends you follow**
 
 ## Tech Stack
+
 - **HTML**
 - **Tailwind CSS**
 - **Javascript**
@@ -28,60 +34,57 @@ Snapgram provides user a bunch of features in the website which are listed below
 - **Express**
 
 ## Installation
+
 ### Start the frontend server
+
 Add these env variables to your .env file in the root directory of frontend
 
 ```
-VITE_BACKEND_URL = http://localhost:5000/api 
+VITE_BACKEND_URL = http://localhost:5000/api
 ```
 
 Install Dependencies
 
-```bash 
+```bash
 npm install
 ```
 
 Run the server
+
 ```bash
 npm run dev
 ```
 
 ### Start the backend server
+
 Add these env variables to your .env file in the root directory of backend
 
 ```
 PORT = 5000
 
-MONGODB_URI = 
+MONGODB_URI =
 
-CLOUDINARY_CLOUD_NAME = 
-CLOUDINARY_API_KEY = 
-CLOUDINARY_API_SECRET = 
+CLOUDINARY_CLOUD_NAME =
+CLOUDINARY_API_KEY =
+CLOUDINARY_API_SECRET =
 
-ACCESS_TOKEN_SECRET = 
-ACCESS_TOKEN_EXPIRY = 
+ACCESS_TOKEN_SECRET =
+ACCESS_TOKEN_EXPIRY =
 
-FRONTEND_URL = http://localhost:5173 
+FRONTEND_URL = http://localhost:5173
 ```
-
 
 Install Dependencies
 
-```bash 
+```bash
 npm install
 ```
 
 Run the server
+
 ```bash
 npm run dev
 ```
-
-
-
-
-
-
-
 
 ## Screenshots
 
