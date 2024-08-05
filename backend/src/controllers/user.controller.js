@@ -58,7 +58,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   if (!findUser) throw new ApiError(400, "Invalid Credentials");
 
-  const isPasswordValid = findUser.isPasswordCorrect(password);
+  const isPasswordValid = await findUser.isPasswordCorrect(password);
 
   if (!isPasswordValid) throw new ApiError(400, "Invalid Credentials");
 
@@ -70,8 +70,8 @@ export const loginUser = asyncHandler(async (req, res) => {
     .cookie("userToken", userToken, {
       httpOnly: true,
       secure: true,
-      // sameSite: "None",
-      // path: "/",
+      sameSite: "None",
+      path: "/",
     })
     .status(200)
     .json(
