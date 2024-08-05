@@ -13,7 +13,7 @@ export const createPost = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const imageLocalPath = req.file.path;
 
-  console.log(imageLocalPath);
+  console.log("path", imageLocalPath);
 
   const imageFile = await uploadOnCloudinary(imageLocalPath);
 
