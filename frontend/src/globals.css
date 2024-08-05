@@ -222,6 +222,10 @@
     @apply hidden md:flex px-6 py-10 flex-col justify-between min-w-[270px] bg-dark-2;
   }
 
+  .rightsidebar {
+    @apply hidden md:flex px-6 py-10 flex-col overflow-auto min-w-[450px];
+  }
+
   .leftsidebar-link {
     @apply rounded-lg base-medium hover:bg-primary-500 transition;
   }

@@ -10,6 +10,7 @@ import {
   toggleFollow as toggleFollowApi,
   getFollowing,
   getFollowers,
+  getTopCreators,
 } from "@/api/user";
 import toast from "react-hot-toast";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -162,4 +163,13 @@ export function useFollowers() {
   });
 
   return { followers, isLoadingFollowers };
+}
+
+export function useTopCreators() {
+  const { data: topCreators, isLoading: isLoadingCreators } = useQuery({
+    queryKey: ["topCreators"],
+    queryFn: getTopCreators,
+  });
+
+  return { topCreators, isLoadingCreators };
 }

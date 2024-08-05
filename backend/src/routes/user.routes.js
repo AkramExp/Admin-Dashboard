@@ -4,6 +4,7 @@ import {
   getCurrentUser,
   getFollowers,
   getFollowing,
+  getTopCreators,
   getUserById,
   loginUser,
   logoutUser,
@@ -19,6 +20,8 @@ const userRouter = Router();
 userRouter.get("/", verifyUser, getCurrentUser);
 
 userRouter.get("/all-users", getAllUsers);
+
+userRouter.get("/top-creators", verifyUser, getTopCreators);
 
 userRouter.get("/following/:userId", getFollowing);
 

@@ -350,3 +350,38 @@ export const getFollowers = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, followers, "Followersfetched successfully"));
 });
+
+export const getTopCreators = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const users = await User.aggregate([
+    {
+      $match: {
+        _id: { $ne: userId },
+      },
+    },
+    {
+      $lookup: {
+        from: "follows",
+        localField: "_id",
+        foreignField: "followingId",
+        as: "followers",
+      },
+    },
+    {
+      $addFields: {
+        followers: {
+          $size: "$followers",
+        },
+      },
+    },
+    {
+      $sort: { followers: -1 },
+    },
+    {
+      $limit: 6,
+    },
+  ]);
+
+  return res.status(200).json(new ApiResponse(200, users, "All users fetched"));
+});

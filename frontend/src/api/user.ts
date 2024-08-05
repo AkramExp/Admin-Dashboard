@@ -163,3 +163,17 @@ export async function getFollowers(userId: string | undefined) {
     }
   }
 }
+
+export async function getTopCreators() {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/top-creators`, {
+      withCredentials: true,
+    });
+
+    return response.data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data.message;
+    }
+  }
+}
