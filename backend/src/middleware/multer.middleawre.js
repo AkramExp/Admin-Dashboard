@@ -6,9 +6,9 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "/public"));
+    cb(null, path.join(__dirname, "/../../public"));
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
