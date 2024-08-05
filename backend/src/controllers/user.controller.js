@@ -72,6 +72,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       secure: true,
       sameSite: "None",
       path: "/",
+      domain: ".vercel.app",
     })
     .status(200)
     .json(
