@@ -9,6 +9,7 @@ import { v2 as cloudinary } from "cloudinary";
 import userRouter from "./routes/user.routes.js";
 import postRouter from "./routes/post.routes.js";
 
+connectDB();
 const app = express();
 
 cloudinary.config({
@@ -31,8 +32,6 @@ app.use(express.json());
 
 app.use("/api/user", userRouter);
 app.use("/api/post", postRouter);
-
-connectDB();
 
 app.get("/", (req, res) => {
   res.send("Server Running");

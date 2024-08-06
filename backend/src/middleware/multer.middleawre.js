@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 
 const storage = multer.memoryStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join("/tmp", "public/"));
+    cb(null, path.join(__dirname, "/../../public"));
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
