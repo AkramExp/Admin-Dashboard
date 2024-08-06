@@ -43,7 +43,25 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthenticated,
     setIsAuthenticated,
   };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      <>
+        {isLoadingUser ? (
+          <div className="h-screen w-screen flex flex-col items-center justify-center gap-6">
+            <img
+              src="/assets/images/logo.svg"
+              alt="logo"
+              width={170}
+              height={36}
+            />
+            <h1 className="text-3xl font-semibold font-serif">Loading...</h1>
+          </div>
+        ) : (
+          children
+        )}
+      </>
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;
