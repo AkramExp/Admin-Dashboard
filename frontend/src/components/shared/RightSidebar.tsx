@@ -17,7 +17,9 @@ const RightSidebar = () => {
     <div className="rightsidebar">
       <h3 className="h3-bold">Top Creators</h3>
       {isLoadingCreators ? (
-        <Loader />
+        <div className="h-[80vh] flex items-center justify-center">
+          <Loader />
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 mt-6">
           {topCreators.map((creator: any) => (
