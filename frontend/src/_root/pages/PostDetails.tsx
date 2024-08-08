@@ -27,7 +27,7 @@ const PostDetails = () => {
     setLikes(post?.likes);
   }, [post, isLoadingPost]);
 
-  const handleClick = (postId: string) => {
+  const handleClick = () => {
     if (clickTimeout) {
       clearTimeout(clickTimeout);
       setClickTimeout(0);
@@ -57,9 +57,9 @@ const PostDetails = () => {
     toggleLikePost(post._id);
   };
 
-  const isSaved = Boolean(
-    user?.savedPosts.find((postId) => postId === post._id)
-  );
+  // const isSaved = Boolean(
+  //   user?.savedPosts.find((postId) => postId === post._id)
+  // );
 
   // const isLiked = Boolean(
   //   post.likes.find((userId: string) => userId === user?._id)
@@ -74,7 +74,7 @@ const PostDetails = () => {
           src={post.imageUrl}
           alt="post"
           className="post_details-img"
-          onClick={() => handleClick(post._id)}
+          onClick={() => handleClick()}
         />
         <div className="post_details-info">
           <div className="flex-between w-full">
@@ -148,7 +148,7 @@ const PostDetails = () => {
           <div className="w-full">
             <PostStats
               post={post}
-              isSaved={isSaved}
+              // isSaved={isSaved}
               likes={likes}
               setLikes={setLikes}
             />

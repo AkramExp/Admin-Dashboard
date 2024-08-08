@@ -63,9 +63,9 @@ const PostCard = ({ post }: PostCardProps) => {
 
   // const isLiked = Boolean(likes.find((userId: string) => userId === user?._id));
 
-  const isSaved = Boolean(
-    user?.savedPosts.find((postId) => postId === post._id)
-  );
+  // const isSaved = Boolean(
+  //   user?.savedPosts.find((postId) => postId === post._id)
+  // );
 
   // const isLiked = Boolean(
   //   post.likes.find((userId: string) => userId === user?._id)
@@ -130,7 +130,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
       <PostStats
         post={post}
-        isSaved={isSaved}
+        // isSaved={isSaved}
         // isLiked={isLiked}
         likes={likes}
         setLikes={setLikes}

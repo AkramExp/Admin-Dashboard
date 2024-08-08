@@ -15,7 +15,12 @@ const GridPostList = ({
   return (
     <ul className="grid-container">
       {posts.map((post: IPost) => (
-        <GridPostCard post={post} showUser={showUser} showStats={showStats} />
+        <GridPostCard
+          post={post}
+          showUser={showUser}
+          showStats={showStats}
+          key={post._id}
+        />
       ))}
     </ul>
   );
