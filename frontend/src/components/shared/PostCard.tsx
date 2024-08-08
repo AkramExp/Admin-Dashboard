@@ -43,16 +43,33 @@ const PostCard = ({ post }: PostCardProps) => {
   };
 
   const handleDoubleClick = () => {
+    handleLikePost();
+  };
+
+  const [likes, setLikes] = useState<string[]>(post.likes);
+
+  const handleLikePost = () => {
+    let likesArray = [...likes];
+
+    if (likesArray.includes(user._id)) {
+      likesArray = likesArray.filter((Id) => Id !== user._id);
+    } else {
+      likesArray.push(user._id);
+    }
+
+    setLikes(likesArray);
     toggleLikePost(post._id);
   };
+
+  // const isLiked = Boolean(likes.find((userId: string) => userId === user?._id));
 
   const isSaved = Boolean(
     user?.savedPosts.find((postId) => postId === post._id)
   );
 
-  const isLiked = Boolean(
-    post.likes.find((userId: string) => userId === user?._id)
-  );
+  // const isLiked = Boolean(
+  //   post.likes.find((userId: string) => userId === user?._id)
+  // );
 
   return (
     <div className="post-card">
@@ -111,7 +128,13 @@ const PostCard = ({ post }: PostCardProps) => {
         />
       </div>
 
-      <PostStats post={post} isSaved={isSaved} isLiked={isLiked} />
+      <PostStats
+        post={post}
+        isSaved={isSaved}
+        // isLiked={isLiked}
+        likes={likes}
+        setLikes={setLikes}
+      />
     </div>
   );
 };
