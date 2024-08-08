@@ -51,9 +51,9 @@ const GridPostCard = ({ post, showUser, showStats }: GridPostCardProps) => {
   //     return Boolean(post?.likes.find((like) => like === user?._id));
   //   }
 
-  function isSaved(post: IPost) {
-    return Boolean(user?.savedPosts.find((postId) => postId === post._id));
-  }
+  // function isSaved(post: IPost) {
+  //   return Boolean(user?.savedPosts.find((postId) => postId === post._id));
+  // }
 
   const handleClick = (postId: string) => {
     if (clickTimeout) {
@@ -97,7 +97,7 @@ const GridPostCard = ({ post, showUser, showStats }: GridPostCardProps) => {
             likes={likes}
             setLikes={setLikes}
             // isLiked={isLiked(post)}
-            isSaved={isSaved(post)}
+            // isSaved={isSaved(post)}
           />
         )}
       </div>
