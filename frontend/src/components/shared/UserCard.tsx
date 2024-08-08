@@ -7,10 +7,30 @@ import { useToggleFollow } from "@/react-query/user";
 type UserCardProps = {
   user: IUser;
   isFollowing: boolean;
+  following: string[];
+  setFollowing: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const UserCard = ({ user, isFollowing = false }: UserCardProps) => {
+const UserCard = ({
+  user,
+  isFollowing = false,
+  following,
+  setFollowing,
+}: UserCardProps) => {
   const { toggleFollow, isTogglingFollow } = useToggleFollow();
+
+  function handleToggleFollow() {
+    let followings = [...following];
+
+    if (followings.includes(user._id)) {
+      followings = followings.filter((Id) => Id !== user._id);
+    } else {
+      followings.push(user._id);
+    }
+
+    setFollowing(followings);
+    toggleFollow(user._id);
+  }
 
   return (
     <Link to={`/profile/${user._id}`} className="user-card">
@@ -35,7 +55,8 @@ const UserCard = ({ user, isFollowing = false }: UserCardProps) => {
         className="shad-button_primary px-5 disabled:cursor-not-allowed"
         onClick={(e) => {
           e.preventDefault();
-          toggleFollow(user._id);
+          // toggleFollow(user._id);
+          handleToggleFollow();
         }}
         disabled={isTogglingFollow}
       >

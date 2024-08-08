@@ -13,15 +13,14 @@ const AllUsers = () => {
   const { user: currentUser } = useUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
+  const [following, setFollowing] = useState<string[]>(currentUser?.following);
 
   useEffect(() => {
     setSearchParams({});
   }, []);
 
   function isFollowing(userId: string) {
-    return Boolean(
-      currentUser?.following.find((followId) => followId === userId)
-    );
+    return Boolean(following.find((followId) => followId === userId));
   }
 
   function handleSubmit(e: any) {
@@ -75,7 +74,12 @@ const AllUsers = () => {
               if (user._id !== currentUser?._id)
                 return (
                   <li key={user?._id} className="flex-1 min-w-[200px] w-full">
-                    <UserCard user={user} isFollowing={isFollowing(user._id)} />
+                    <UserCard
+                      user={user}
+                      isFollowing={isFollowing(user._id)}
+                      following={following}
+                      setFollowing={setFollowing}
+                    />
                   </li>
                 );
             })}

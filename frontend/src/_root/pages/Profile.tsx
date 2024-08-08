@@ -7,6 +7,7 @@ import LikedPosts from "./LikedPosts";
 import { useToggleFollow, useUserById } from "@/react-query/user";
 import { useUserPosts } from "@/react-query/post";
 import Loader from "@/components/shared/Loader";
+import { useEffect, useState } from "react";
 
 interface StabBlockProps {
   value: string | number;
@@ -26,6 +27,28 @@ const Profile = () => {
   const { userPosts, isLoadingUserPosts } = useUserPosts();
   const { currentUser, isLoadingIdUser } = useUserById();
   const { toggleFollow, isTogglingFollow } = useToggleFollow();
+  const [following, setFollowing] = useState<string[]>(currentUser?.following);
+
+  useEffect(() => {
+    setFollowing(user?.following);
+  }, [user]);
+
+  const isFollowing = Boolean(
+    following?.find((followId) => followId === currentUser?._id)
+  );
+
+  function handleToggleFollow() {
+    let followings = [...following];
+
+    if (followings.includes(user._id)) {
+      followings = followings.filter((Id) => Id !== user._id);
+    } else {
+      followings.push(user._id);
+    }
+
+    setFollowing(followings);
+    toggleFollow(currentUser._id);
+  }
 
   if (isLoadingIdUser || isLoadingUserPosts)
     return (
@@ -34,9 +57,9 @@ const Profile = () => {
       </div>
     );
 
-  const isFollowing = Boolean(
-    user?.following.find((followId) => followId === currentUser._id)
-  );
+  // const isFollowing = Boolean(
+  //   user?.following.find((followId) => followId === currentUser._id)
+  // );
 
   return (
     <div className="profile-container">
@@ -68,10 +91,7 @@ const Profile = () => {
                 />
               </Link>
               <Link to={`/profile/${currentUser._id}/following`}>
-                <StatBlock
-                  value={currentUser.followingCount}
-                  label="Following"
-                />
+                <StatBlock value={following.length} label="Following" />
               </Link>
             </div>
 
@@ -103,7 +123,7 @@ const Profile = () => {
               <Button
                 type="button"
                 className="shad-button_primary px-8 disabled:cursor-not-allowed"
-                onClick={() => toggleFollow(currentUser._id)}
+                onClick={() => handleToggleFollow()}
                 disabled={isTogglingFollow}
               >
                 {isFollowing ? "Unfollow" : "Follow"}

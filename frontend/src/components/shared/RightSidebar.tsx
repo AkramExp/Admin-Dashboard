@@ -2,15 +2,15 @@ import { useTopCreators } from "@/react-query/user";
 import Loader from "./Loader";
 import UserCard from "./UserCard";
 import { useUserContext } from "@/context/AuthContext";
+import { useState } from "react";
 
 const RightSidebar = () => {
   const { topCreators, isLoadingCreators } = useTopCreators();
   const { user: currentUser } = useUserContext();
+  const [following, setFollowing] = useState<string[]>(currentUser?.following);
 
   function isFollowing(userId: string) {
-    return Boolean(
-      currentUser?.following.find((followId) => followId === userId)
-    );
+    return Boolean(following.find((followId) => followId === userId));
   }
 
   return (
@@ -27,6 +27,8 @@ const RightSidebar = () => {
               key={creator._id}
               user={creator}
               isFollowing={isFollowing(creator._id)}
+              following={following}
+              setFollowing={setFollowing}
             />
           ))}
         </div>
