@@ -1,5 +1,7 @@
+import { useUserContext } from "@/context/AuthContext";
 import { useToggleLikePost, useToggleSave } from "@/react-query/post";
 import { IPost } from "@/types";
+import { useState } from "react";
 
 type PostStatsProps = {
   post: IPost;
@@ -7,9 +9,33 @@ type PostStatsProps = {
   isLiked: boolean;
 };
 
-const PostStats = ({ post, isSaved, isLiked }: PostStatsProps) => {
+const PostStats = ({ post, isSaved }: PostStatsProps) => {
   const { toggleLikePost } = useToggleLikePost();
   const { toggleSave } = useToggleSave();
+  const { user } = useUserContext();
+
+  const isLiked = Boolean(
+    post.likes.find((userId: string) => userId === user?._id)
+  );
+
+  const [likes, setLikes] = useState<string[]>(post.likes);
+
+  const handleLikePost = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+
+    let likesArray = [...likes];
+
+    if (likesArray.includes(user._id)) {
+      likesArray = likesArray.filter((Id) => Id !== user._id);
+    } else {
+      likesArray.push(user._id);
+    }
+
+    setLikes(likesArray);
+    toggleLikePost(post._id);
+  };
 
   return (
     <div className="flex justify-between items-center z-20">
@@ -19,8 +45,8 @@ const PostStats = ({ post, isSaved, isLiked }: PostStatsProps) => {
           alt="like"
           width={25}
           height={25}
-          onClick={() => {
-            toggleLikePost(post._id);
+          onClick={(e) => {
+            handleLikePost(e);
           }}
           className="cursor-pointer"
         />
