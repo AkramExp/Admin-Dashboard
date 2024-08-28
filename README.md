@@ -2,6 +2,8 @@
 
 Snapgram is a modern social media website with a stunning UI with a native mobile feel.
 
+![s1](https://github.com/AkramExp/snapgram/blob/main/frontend/public/screenshot.png)
+
 #### Live Site : https://snapgram-akramexp.vercel.app
 
 ## Features
